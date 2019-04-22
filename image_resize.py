@@ -36,6 +36,12 @@ def get_image(path):
     image = Image.open(path)
     return image
 
+def scale_new_sizes(width, height, scale):
+    return width*scale, height*scale
+
+def print_warning(new_proportion, old_proportion):
+    if new_proportion != old_proportion:
+        print('Пропорции не совпадают с исходными!')
 
 def get_new_width_height(args, image):
     width, height = image.size
@@ -43,22 +49,15 @@ def get_new_width_height(args, image):
     if (args.width or args.height) and args.scale:
         return None
     if args.scale:
-        new_height = height * args.scale
-        new_width = width * args.scale
-        return new_width, new_height
+        return scale_new_sizes(width, height, args.scale)
     if args.width and args.height:
-        new_proportion = args.width/args.height
-        if new_proportion != old_proportion:
-            print('Пропорции не совпадают с исходными!')
+        new_proportion = args.width / args.height
+        print_warning(new_proportion,old_proportion)
         return args.width, args.height
     if args.height:
-        new_height = height * (args.height/height)
-        new_width = width * (args.height/height)
-        return new_width, new_height
+        return scale_new_sizes(width, height, args.height/height)
     if args.width:
-        new_height = height * (args.width/width)
-        new_width = width * (args.width/width)
-        return new_width, new_height
+        return scale_new_sizes(width, height, args.width/width)
 
 
 if __name__ == '__main__':
@@ -67,7 +66,6 @@ if __name__ == '__main__':
         image = get_image(args.path_to_image)
     except IOError:
         sys.exit('Проблемы с загрузкой изображения')
-    # size ~(width,height)
     size = get_new_width_height(args, image)
     if size:
         size = tuple(map(int, size))
