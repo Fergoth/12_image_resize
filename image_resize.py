@@ -4,15 +4,14 @@ import sys
 import os
 
 
-
-def generate_output_path(path_to_image,output_path,image):
+def generate_output_path(path_to_image, output_path, image):
     name, ending = os.path.splitext(path_to_image)
     new_image_name = '{}__{}x{}{}'.format(name, *image.size, ending)
     if output_path:
         os.path.join(output_path, new_image_name)
         return output_path
     else:
-        os.path.join(path_to_image,new_image_name)
+        os.path.join(path_to_image, new_image_name)
         return path_to_image
 
 
@@ -44,8 +43,8 @@ def scale_new_sizes(width, height, scale):
     return int(width * scale), int(height * scale)
 
 
-def is_equal_proportion(new_proportion, old_proportion, e = 0.001):
-    return new_proportion - old_proportion < e
+def is_equal_proportion(new_proportion, old_proportion, eps=0.001):
+    return new_proportion - old_proportion < eps
 
 
 def get_new_width_height(width, height, scale, image):
@@ -62,20 +61,21 @@ def get_new_width_height(width, height, scale, image):
 
 def validate_args(width, height, scale, output_dir):
     if (width or height) and scale:
-        raise argparse.ArgumentTypeError('Требуется (Высота и(или) Ширина) или Маштаб')
+        raise argparse.ArgumentTypeError(
+            'Требуется (Высота и(или) Ширина) или Маштаб')
     if output_dir and not output_dir.isdir(output_dir):
         raise argparse.ArgumentTypeError('Неправильный путь к директории')
     if not any((width, height, scale)):
-        raise argparse.ArgumentTypeError('Не указаны аргументы для изменения размера')
+        raise argparse.ArgumentTypeError(
+            'Не указаны аргументы для изменения размера')
     if ((width and width <= 0)
-        or (height and height <= 0)
-        or (scale and scale <= 0)
+            or (height and height <= 0)
+            or (scale and scale <= 0)
     ):
-        raise argparse.ArgumentTypeError('Размеры должны быть не отрицательными')
+        raise argparse.ArgumentTypeError(
+            'Размеры должны быть не отрицательными')
 
-
-
-if __name__ == '__main__':
+def main():
     args = get_args()
 
     width = args.width
@@ -85,8 +85,8 @@ if __name__ == '__main__':
     output_dir = args.output
     try:
         validate_args(width, height, scale, output_dir)
-    except argparse.ArgumentTypeError as e:
-        sys.exit(e)
+    except argparse.ArgumentTypeError as error:
+        sys.exit(error)
     try:
         image = get_image(path_to_image)
     except IOError:
@@ -98,10 +98,13 @@ if __name__ == '__main__':
     new_proportion = new_width / new_height
     old_proportion = old_width / old_height
 
-    if not is_equal_proportion(new_proportion,old_proportion):
+    if not is_equal_proportion(new_proportion, old_proportion):
         print('Пропорции не совпадают с исходными!')
 
     new_image = image.resize(new_width, new_height)
     output_path = generate_output_path(path_to_image, output_dir, image)
     image.save(output_path)
+
+if __name__ == '__main__':
+    main()
 
