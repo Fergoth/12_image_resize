@@ -103,7 +103,7 @@ def main():
 
     new_image = image.resize(new_width, new_height)
     output_path = generate_output_path(path_to_image, output_dir, image)
-    image.save(output_path)
+    new_image.save(output_path)
 
 if __name__ == '__main__':
     main()
