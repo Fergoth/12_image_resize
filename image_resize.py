@@ -8,11 +8,9 @@ def generate_output_path(path_to_image, output_path, image):
     name, ending = os.path.splitext(path_to_image)
     new_image_name = '{}__{}x{}{}'.format(name, *image.size, ending)
     if output_path:
-        os.path.join(output_path, new_image_name)
-        return output_path
+        return os.path.join(output_path, new_image_name)
     else:
-        os.path.join(path_to_image, new_image_name)
-        return path_to_image
+        return os.path.join(path_to_image, new_image_name)
 
 
 def get_args():
