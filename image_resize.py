@@ -63,7 +63,7 @@ def validate_args(width, height, scale, output_dir):
     if (width or height) and scale:
         raise argparse.ArgumentTypeError(
             'Требуется (Высота и(или) Ширина) или Маштаб')
-    if output_dir and not output_dir.isdir(output_dir):
+    if output_dir and not os.path.isdir(output_dir):
         raise argparse.ArgumentTypeError('Неправильный путь к директории')
     if not any((width, height, scale)):
         raise argparse.ArgumentTypeError(
@@ -101,7 +101,7 @@ def main():
     if not is_equal_proportion(new_proportion, old_proportion):
         print('Пропорции не совпадают с исходными!')
 
-    new_image = image.resize(new_width, new_height)
+    new_image = image.resize((new_width, new_height))
     output_path = generate_output_path(path_to_image, output_dir, image)
     new_image.save(output_path)
 
